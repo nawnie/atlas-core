@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "assessment_id": "SEC-20260724-8d2d01",
+  "title": "Atlas Core local automation security assessment",
+  "owner": "AI Embedded Systems",
+  "scope": "Guarded local inbox processing, scheduled verified backups, official SDK status, private Gateway authorization, and localhost operator visibility",
+  "created_at": "2026-07-24T20:15:49.025994Z",
+  "authorization": {
+    "status": "authorized_local_build_and_test",
+    "approved_targets": [
+      "Canonical Atlas Core source checkout",
+      "Synthetic disposable databases and inbox fixtures",
+      "Loopback operator and Gateway test services"
+    ],
+    "prohibited_actions": [
+      "Connect live company or vendor systems",
+      "Expose a service beyond loopback",
+      "Install an operating-system startup task",
+      "Transfer backups off device",
+      "Execute proposed business actions"
+    ]
+  },
+  "assets": [
+    "Company Memory SQLite database",
+    "Local export files",
+    "Verified recovery points",
+    "Automation configuration and receipts",
+    "Gateway service grants"
+  ],
+  "actors": [
+    "Trusted local Windows operator",
+    "Configured local automation runner",
+    "Authenticated private Gateway backup administrator"
+  ],
+  "trust_boundaries": [
+    "Configured inbox to bounded file parser",
+    "Validated connector record to registered industry adapter",
+    "Automation status to localhost operator",
+    "Automation status to authenticated private Gateway"
+  ],
+  "data_flows": [
+    "Regular JSONL, NDJSON, or CSV file to transactional import and Cartographer",
+    "Company Memory to locally verified SQLite recovery point",
+    "Payload-free automation receipt to SDK, operator, and authorized Gateway"
+  ],
+  "threats": [
+    {
+      "name": "Untrusted or oversized inbox input",
+      "control": "Regular-file check, extension allowlist, 5 MiB bound, UTF-8 and structural validation, adapter validation, transaction rollback"
+    },
+    {
+      "name": "Overlapping unattended runners",
+      "control": "Exclusive per-database O_EXCL lock released in a finally block"
+    },
+    {
+      "name": "Sensitive payload copied into operational telemetry",
+      "control": "Receipts contain identifiers, checksums, counts, outcomes, and bounded errors but no record payload"
+    },
+    {
+      "name": "Unattended deletion of all recovery points",
+      "control": "Automatic pruning defaults off, requires explicit configuration, and enforces keep_last of at least two"
+    },
+    {
+      "name": "Remote filesystem disclosure",
+      "control": "Gateway requires global backup permission and redacts config_path and state_directory"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "informational",
+      "status": "accepted_for_local_phase",
+      "finding": "A process crash can leave runner.lock behind; automatic stale-lock deletion is intentionally not implemented because PID reuse makes silent reclamation unsafe."
+    }
+  ],
+  "audit_evidence": [
+    "src/atlas_core/automation.py",
+    "tests/test_automation.py",
+    "tests/test_gateway.py",
+    "tests/test_operator.py",
+    "docs/BUILD_STATUS.md"
+  ],
+  "validation": [
+    "68 unittest cases passed on Python 3.12",
+    "Python compileall and browser JavaScript syntax checks passed",
+    "Installed three-wheel automation, SDK, Gateway, recovery, and retention smoke passed",
+    "Live localhost Automation view rendered verified receipts with zero browser errors and no horizontal overflow"
+  ],
+  "residual_risk": [
+    "No operating-system service supervisor or stale-lock recovery procedure is installed.",
+    "No approved encrypted off-device backup destination exists.",
+    "Provider-specific authentication, production identity, TLS certificate lifecycle, monitoring, and incident operations remain unconfigured.",
+    "This assessment is implementation evidence, not a compliance certification."
+  ]
+}

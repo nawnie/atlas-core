@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+runtime/
+config/atlas-automation.json
+dist/
+build/
+sdk/python/dist/

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "inboxes": [
+    {
+      "job_id": "hotel-nightly-export",
+      "tenant_id": "demo-hotel",
+      "domain": "hotel",
+      "connector_id": "hotel-file-inbox",
+      "source_system": "approved-pms-export",
+      "path": "../runtime/inboxes/hotel"
+    }
+  ],
+  "backup": {
+    "enabled": true,
+    "interval_minutes": 1440,
+    "keep_last": 7,
+    "apply_retention": false
+  },
+  "portable_destination": {
+    "enabled": false,
+    "destination_id": "encrypted-portable-copy",
+    "kind": "local_folder",
+    "path": "../runtime/portable-recovery",
+    "passphrase_env": "ATLAS_RECOVERY_PASSPHRASE",
+    "keep_last": 7,
+    "apply_retention": false
+  }
+}

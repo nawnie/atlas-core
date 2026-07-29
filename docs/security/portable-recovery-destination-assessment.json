@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "assessment_id": "SEC-20260724-503e47",
+  "title": "Atlas Core portable recovery destination security assessment",
+  "owner": "AI Embedded Systems",
+  "scope": "Provider-neutral encrypted local-folder destination, automation, SDK and Gateway receipts, operator visibility, retention, and recovery import",
+  "created_at": "2026-07-24T20:29:58.877476Z",
+  "authorization": {
+    "status": "authorized_local_build_and_synthetic_test",
+    "approved_targets": [
+      "Canonical Atlas Core source checkout",
+      "Disposable local folders, databases, and encrypted artifacts",
+      "Loopback operator and Gateway test services"
+    ],
+    "prohibited_actions": [
+      "Choose or write to a real off-device destination",
+      "Connect a cloud storage provider",
+      "Store a real recovery passphrase in source, config, receipts, or logs",
+      "Install a service, scheduled task, or startup action",
+      "Restore a live Company Memory database",
+      "Expose Atlas beyond loopback"
+    ]
+  },
+  "assets": [
+    "Company Memory recovery point",
+    "Encrypted portable recovery artifact",
+    "Portable manifest and automation receipt",
+    "Operator-controlled recovery passphrase"
+  ],
+  "actors": [
+    "Trusted local Windows operator",
+    "Configured Atlas automation runner",
+    "Backup-authorized private Gateway reader"
+  ],
+  "trust_boundaries": [
+    "Verified local backup to encrypted portable artifact",
+    "Runtime secret source to in-process encryption and authentication",
+    "Configured local-folder adapter to filesystem",
+    "Payload-free receipt to SDK, Gateway, and localhost operator"
+  ],
+  "data_flows": [
+    "Verified SQLite backup to AES-256-GCM and scrypt artifact",
+    "Exclusive partial write to same-directory artifact and manifest replacement",
+    "Encrypted read-back to authentication and plaintext checksum verification",
+    "Portable receipt to automation ledger and read-only status surfaces",
+    "Authenticated portable artifact to registered local recovery point"
+  ],
+  "threats": [
+    {
+      "name": "Passphrase persisted or exposed by configuration",
+      "control": "Configuration accepts only a validated environment-variable name, rejects unknown fields such as passphrase, prompts without echo for attended launcher use, and never records the value"
+    },
+    {
+      "name": "Partial, corrupt, or tampered copy reported as usable",
+      "control": "Exclusive partial files, fsync, same-directory replacement, SHA-256 verification, authenticated decryption, backup identity check, and plaintext checksum check precede success"
+    },
+    {
+      "name": "Arbitrary path or linked destination traversal",
+      "control": "Explicit absolute destination resolution, filesystem-root rejection, identifier allowlists, filename construction from validated export IDs, and symlink/junction rejection"
+    },
+    {
+      "name": "Unattended deletion removes all recovery copies",
+      "control": "Retention defaults to preview, preserves invalid entries, enforces at least two valid copies, and requires an exact destination-specific confirmation"
+    },
+    {
+      "name": "Remote or browser surface discloses destination or secret",
+      "control": "Receipts expose only safe identifiers, filenames, hashes, sizes, algorithms, and outcomes; Gateway redacts configuration/state paths and offers no destination mutation API"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "low",
+      "status": "accepted_with_operator_visibility",
+      "finding": "A process or device failure after artifact replacement but before manifest replacement can leave an orphan encrypted artifact. Atlas refuses to overwrite it, requiring operator inspection instead of silently treating it as valid."
+    },
+    {
+      "severity": "informational",
+      "status": "deployment_gate",
+      "finding": "The adapter secures Atlas artifact handling but cannot prove that a mounted or synchronized folder is physically off-device, durable, private, or governed by an approved provider policy."
+    }
+  ],
+  "audit_evidence": [
+    "src/atlas_core/recovery_destinations.py",
+    "src/atlas_core/automation.py",
+    "src/atlas_core/cli.py",
+    "sdk/python/src/atlas_core_sdk/contracts.py",
+    "tests/test_recovery_destinations.py",
+    "tests/test_gateway.py",
+    "tests/test_operator.py",
+    "scripts/smoke_gateway_bundle.py"
+  ],
+  "validation": [
+    "Six focused portable destination tests passed in the installed Atlas Python environment",
+    "Seventy-four full-suite tests, Python compilation, and operator JavaScript syntax passed",
+    "Rebuilt three-wheel installed-package smoke authenticated a portable copy and returned portable_exported through the remote SDK",
+    "Live localhost operator rendered verified portable status with no secret or path disclosure, no console errors, and no horizontal overflow"
+  ],
+  "residual_risk": [
+    "No real portable or off-device destination has been selected, mounted, authorized, or tested.",
+    "Runtime secret custody, rotation, escrow, and recovery ceremony remain deployment-owner responsibilities.",
+    "Directory ancestry and synchronized-provider behavior depend on the selected deployment and require live validation.",
+    "This assessment is implementation evidence, not a compliance certification."
+  ]
+}

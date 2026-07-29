@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "assessment_id": "SEC-20260724-23f688",
+  "title": "Atlas Core controlled execution outbox security assessment",
+  "owner": "AI Embedded Systems",
+  "scope": "Post-approval execution queue, provider executor registry, idempotency, outcome reconciliation, rollback receipts, official SDK, Gateway permissions, and sandbox-limited operator controls",
+  "created_at": "2026-07-24T20:50:12.171787Z",
+  "authorization": {
+    "status": "authorized_local_build_and_synthetic_test",
+    "approved_targets": [
+      "Canonical Atlas Core source checkout",
+      "Disposable SQLite databases and synthetic action executors",
+      "Loopback operator and Gateway test services"
+    ],
+    "prohibited_actions": [
+      "Register a live vendor executor or credential",
+      "Send an action to a real company system",
+      "Expose Atlas beyond loopback",
+      "Change production identity, permissions, firewall, or TLS",
+      "Represent a synthetic receipt as a real business outcome"
+    ]
+  },
+  "assets": [
+    "Human-approved action proposal",
+    "Execution idempotency key and state",
+    "Provider outcome and rollback receipt",
+    "Company Memory audit history"
+  ],
+  "actors": [
+    "Human proposal reviewer",
+    "Local Atlas operator",
+    "Authenticated Gateway execution service",
+    "Server-registered provider executor",
+    "Separate outcome reconciler"
+  ],
+  "trust_boundaries": [
+    "Human approval to execution queue",
+    "Execution queue to server-registered provider adapter",
+    "Provider outcome to minimized durable receipt",
+    "Ambiguous provider outcome to privileged reconciliation",
+    "Execution receipt to SDK, Gateway, and read-only operator"
+  ],
+  "data_flows": [
+    "Approved proposal to confirmation-guarded durable queue",
+    "Proposal payload and stable idempotency key to allowlisted executor",
+    "Bounded operator-safe outcome summary to Company Memory",
+    "Uncertain outcome to explicit reconciliation without automatic retry",
+    "Succeeded outcome to separately confirmed rollback adapter"
+  ],
+  "threats": [
+    {
+      "name": "Action executes without human approval",
+      "control": "Queue transaction requires the proposal to be human-approved and an exact proposal/executor confirmation"
+    },
+    {
+      "name": "Duplicate provider mutation",
+      "control": "One execution per proposal, stable unique idempotency key, transactional claim, terminal replay receipts, and maximum three definite-failure attempts"
+    },
+    {
+      "name": "Ambiguous network failure is retried and duplicates work",
+      "control": "Executor exceptions become uncertain; Atlas refuses retry until a separately confirmed reconciliation records a definite outcome"
+    },
+    {
+      "name": "Caller selects an arbitrary endpoint or action",
+      "control": "Executors are server-registered objects with validated identifiers and explicit action-type allowlists; request URLs and credentials are not accepted by queue APIs"
+    },
+    {
+      "name": "Remote caller self-asserts audit identity",
+      "control": "Gateway binds queue and reconciliation actor fields to the authenticated grant name and uses separate execute and reconcile permissions"
+    },
+    {
+      "name": "Receipt or UI leaks action payload or provider secrets",
+      "control": "Execution receipts and audit events omit proposal payload; result text and references are bounded and executor authors must supply operator-safe summaries"
+    },
+    {
+      "name": "Rollback is treated as automatic or guaranteed",
+      "control": "Rollback requires a definitely succeeded action, exact separate confirmation, registered support, and its own succeeded or failed receipt"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "medium",
+      "status": "deployment_gate",
+      "finding": "A live executor must implement provider-specific idempotency and safe outcome parsing. Atlas supplies the stable key but cannot prove a vendor honors it until that adapter and provider are tested."
+    },
+    {
+      "severity": "medium",
+      "status": "accepted_with_manual_reconciliation",
+      "finding": "Abrupt process termination while an action is running leaves a running receipt whose external outcome is unknown. Atlas does not auto-reclaim or retry it; an operational reconciliation procedure is required."
+    },
+    {
+      "severity": "informational",
+      "status": "local_phase",
+      "finding": "The localhost operator can queue, run, and roll back only the built-in Hotel/PMS sandbox. It refuses receipts for every other executor and does not expose reconciliation."
+    }
+  ],
+  "audit_evidence": [
+    "src/atlas_core/execution.py",
+    "src/atlas_core/memory.py",
+    "sdk/python/src/atlas_core_sdk",
+    "apps/gateway/src/atlas_gateway/server.py",
+    "apps/operator/src/atlas_operator",
+    "tests/test_execution.py",
+    "tests/test_sdk.py",
+    "tests/test_gateway.py",
+    "tests/test_operator.py",
+    "scripts/smoke_gateway_bundle.py"
+  ],
+  "validation": [
+    "Ninety-one full-suite tests passed on Python 3.12",
+    "Python compileall and operator JavaScript syntax passed",
+    "Fresh core, SDK, Gateway, and Operator wheels installed and passed the Hotel/PMS sandbox execution smoke through the authenticated remote SDK",
+    "Live localhost Hotel workspace completed approval, execution, provider-state verification, and rollback with no console errors or desktop horizontal overflow"
+  ],
+  "residual_risk": [
+    "No live provider executor, credential, sandbox account, or real action has been authorized or tested.",
+    "Provider-specific idempotency, rollback semantics, rate limits, audit fields, and incident procedures require adapter-level review.",
+    "Crash recovery for a running execution is intentionally manual because silent retry could duplicate an external mutation.",
+    "This assessment is implementation evidence and not a compliance certification."
+  ]
+}

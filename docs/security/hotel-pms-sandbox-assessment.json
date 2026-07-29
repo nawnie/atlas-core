@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "assessment_id": "SEC-20260724-c3b968",
+  "title": "Atlas Core Hotel PMS sandbox security assessment",
+  "owner": "AI Embedded Systems",
+  "scope": "Persistent local-only Hotel PMS sandbox provider, operator execution controls, tenant isolation, idempotency, provider state, and rollback",
+  "created_at": "2026-07-24T21:11:43.382939Z",
+  "authorization": {
+    "status": "authorized_local_synthetic_build_and_test",
+    "approved_targets": [
+      "Canonical Atlas Core checkout",
+      "Persistent synthetic Hotel PMS SQLite databases under disposable test and local runtime paths",
+      "Loopback Atlas Operator and Gateway services"
+    ],
+    "prohibited_actions": [
+      "Contact a live PMS or hotel account",
+      "Accept or store a provider credential",
+      "Expose the operator beyond localhost",
+      "Represent sandbox state as a real reservation outcome"
+    ]
+  },
+  "assets": [
+    "Synthetic tenant reservation state",
+    "Human approval decision",
+    "Stable execution idempotency key",
+    "Provider-side cancellation review and inventory state",
+    "Execution and rollback receipts"
+  ],
+  "actors": [
+    "Local human reviewer",
+    "Local Atlas Operator browser",
+    "Atlas execution coordinator",
+    "Built-in Hotel PMS sandbox"
+  ],
+  "trust_boundaries": [
+    "Browser mutation to localhost operator token and tenant binding",
+    "Approved Atlas proposal to fixed sandbox executor",
+    "Atlas execution request to separate persistent sandbox database",
+    "Provider state and bounded receipt back to operator"
+  ],
+  "data_flows": [
+    "Synthetic reservation versions into Company Memory and Cartographer",
+    "Human-approved cancellation proposal into the execution outbox",
+    "Exact confirmation phrase and stable idempotency key into the sandbox",
+    "Inventory release or rollback into tenant-scoped sandbox state"
+  ],
+  "threats": [
+    {
+      "name": "Operator route invokes an arbitrary or live executor",
+      "control": "Operator queue route fixes the executor to hotel-pms-sandbox and run or rollback routes reject receipts owned by any other executor"
+    },
+    {
+      "name": "Cross-tenant reservation access",
+      "control": "Mutation token binds the body and header tenant; provider reads and writes use tenant_id plus reservation_id keys"
+    },
+    {
+      "name": "Duplicate inventory release",
+      "control": "Provider persists unique idempotency and execution identifiers and returns the original reference on replay across process restarts"
+    },
+    {
+      "name": "Proposal payload targets a different reservation",
+      "control": "Provider requires the payload reservation identifier to equal the immutable proposal entity identifier"
+    },
+    {
+      "name": "UI implies a real PMS action",
+      "control": "Workspace, confirmation dialog, capability name, provider identifier, and receipt reference all explicitly identify the local sandbox"
+    },
+    {
+      "name": "Rollback silently invents prior state",
+      "control": "Provider stores previous review and inventory states with the original action and requires that receipt for rollback"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "informational",
+      "status": "local_sandbox_only",
+      "finding": "The adapter deliberately has no network endpoint, credential field, or live-provider mode."
+    },
+    {
+      "severity": "medium",
+      "status": "deployment_gate",
+      "finding": "A live hotel adapter remains a separate security boundary requiring vendor sandbox certification, credential custody, provider-native idempotency, rate-limit handling, and incident procedures."
+    },
+    {
+      "severity": "low",
+      "status": "accepted_for_synthetic_workspace",
+      "finding": "The sandbox reservation view exposes synthetic reservation identifiers and state to any local process able to access the loopback operator; it must not be used for real guest data."
+    }
+  ],
+  "audit_evidence": [
+    "src/atlas_core/providers/hotel_sandbox.py",
+    "apps/operator/src/atlas_operator/server.py",
+    "apps/operator/src/atlas_operator/web/index.html",
+    "apps/operator/src/atlas_operator/web/app.js",
+    "tests/test_hotel_sandbox.py",
+    "tests/test_operator.py",
+    "scripts/smoke_gateway_bundle.py"
+  ],
+  "validation": [
+    "Ninety-one Python 3.12 tests passed, including provider restart idempotency, tenant isolation, exact confirmations, full operator execution, rollback, and denial of non-sandbox executors",
+    "Fresh core, SDK, Gateway, and Operator wheels installed with no broken requirements",
+    "Installed remote SDK and Gateway completed a sandbox cancellation and verified provider inventory released",
+    "Live browser completed seed, approval, queue, execution, and rollback with exact typed confirmations",
+    "Live browser showed released inventory after execution and restored held inventory after rollback with no console errors or desktop horizontal overflow"
+  ],
+  "residual_risk": [
+    "The sandbox is implementation evidence, not a vendor-certified PMS integration.",
+    "No real guest data, provider credentials, network calls, or external actions were used.",
+    "A live adapter requires a new focused security assessment and explicit authorization.",
+    "This assessment is not a compliance certification."
+  ]
+}

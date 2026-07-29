@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "assessment_id": "SEC-20260724-provider-certification",
+  "title": "Atlas Core provider certification security assessment",
+  "owner": "AI Embedded Systems",
+  "scope": "Provider manifests, static readiness, local sandbox conformance, SDK, Gateway authorization, and operator display",
+  "created_at": "2026-07-24",
+  "authorization": {
+    "status": "authorized_local_synthetic_build_and_test",
+    "approved_targets": [
+      "Canonical Atlas Core checkout",
+      "Built-in synthetic Hotel PMS sandbox",
+      "Loopback Atlas Operator and Gateway"
+    ],
+    "prohibited_actions": [
+      "Contact a vendor endpoint",
+      "Read or store provider credentials",
+      "Run production conformance",
+      "Represent local conformance as vendor certification"
+    ]
+  },
+  "threats": [
+    {
+      "name": "Certification triggers an external action",
+      "control": "Dynamic conformance requires an offline, credential-free, synthetic local-sandbox manifest; remote transport rejects dynamic requests."
+    },
+    {
+      "name": "Manifest becomes a secret or endpoint transport",
+      "control": "Manifest validation accepts hostnames only when networked and receipts omit endpoint hosts; secrets, URLs, and paths are not contract fields."
+    },
+    {
+      "name": "Runtime capabilities exceed the reviewed manifest",
+      "control": "Static checks compare provider identity, action allowlists, rollback support, credential strategy, and live-action posture."
+    },
+    {
+      "name": "Conformance leaves synthetic state behind",
+      "control": "Fixtures use a dedicated atlas-cert tenant prefix and cleanup is checked in a finally path."
+    },
+    {
+      "name": "Static readiness is mistaken for production approval",
+      "control": "Networked sandboxes remain ready-for-conformance and production manifests always return production-review-required."
+    },
+    {
+      "name": "Readiness leaks exception or provider details",
+      "control": "Receipts contain bounded check summaries and exception class only, with no raw exception text, credentials, endpoints, or payloads."
+    }
+  ],
+  "findings": [
+    {
+      "severity": "informational",
+      "status": "verified",
+      "finding": "The Hotel PMS sandbox passes isolated execute, replay, rollback, restoration, rollback replay, and cleanup checks."
+    },
+    {
+      "severity": "medium",
+      "status": "deployment_gate",
+      "finding": "No vendor sandbox or production provider is certified; each requires explicit authorization, credential custody, network controls, and focused review."
+    }
+  ],
+  "audit_evidence": [
+    "src/atlas_core/provider_certification.py",
+    "src/atlas_core/providers/hotel_sandbox.py",
+    "sdk/python/src/atlas_core_sdk/client.py",
+    "apps/gateway/src/atlas_gateway/server.py",
+    "apps/operator/src/atlas_operator/server.py",
+    "tests/test_provider_certification.py"
+  ],
+  "validation": [
+    "Ninety-nine Python tests passed.",
+    "Fresh core, SDK, Gateway, and Operator wheels installed with no broken requirements.",
+    "Installed remote SDK returned static Hotel PMS sandbox readiness without triggering conformance.",
+    "Local conformance returned sandbox-certified and removed its isolated fixture."
+  ],
+  "residual_risk": [
+    "This is a conformance framework, not a third-party certification authority.",
+    "Manifest assertions require independent review before production use.",
+    "No live provider endpoint, credential, data, or action was used."
+  ]
+}

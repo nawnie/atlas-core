@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "assessment_id": "SEC-20260724-f0ecdd",
+  "title": "Atlas declarative adapter security assessment",
+  "owner": "AI Embedded Systems",
+  "scope": "Strict declarative source mapping, record validation, change-triggered approval rules, SDK exports, atlas-provider CLI, and Cartographer lineage",
+  "created_at": "2026-07-24T21:52:57.436918Z",
+  "authorization": {
+    "status": "authorized_local_synthetic_build_and_test",
+    "approved_targets": [
+      "Canonical Atlas Core checkout",
+      "Synthetic declarative adapter specifications and records",
+      "Disposable local Company Memory databases"
+    ],
+    "prohibited_actions": [
+      "Ingest private or customer records",
+      "Use declarative adapters to bypass reviewed healthcare handling",
+      "Contact source or provider systems",
+      "Execute a proposed action",
+      "Treat a mapping specification as authorization or compliance approval"
+    ]
+  },
+  "assets": [
+    "Declarative adapter specification",
+    "Synthetic source records",
+    "Canonical observations and provenance",
+    "Cartographer mapping cards",
+    "Human-review proposals"
+  ],
+  "actors": [
+    "Local adapter developer",
+    "Official Atlas SDK application",
+    "Atlas universal translator and approval engine",
+    "Human reviewer"
+  ],
+  "trust_boundaries": [
+    "Bounded JSON specification into a registered IndustryAdapter",
+    "Untrusted source record into strict allowlisted field mapping",
+    "Canonical change set into declarative approval rules",
+    "Mapping evidence into Company Memory and Cartographer"
+  ],
+  "data_flows": [
+    "Strict versioned specification into DeclarativeIndustryAdapter",
+    "Allowlisted top-level JSON scalars into typed canonical attributes",
+    "Versioned observation into change intelligence and Cartographer",
+    "Matched rule into a proposal that remains subject to approval policy"
+  ],
+  "threats": [
+    {
+      "name": "Unmapped data enters Company Memory",
+      "control": "Every source key must be an identity, timestamp, version, or declared mapping; unknown fields fail before storage."
+    },
+    {
+      "name": "Specification hides ambiguous or duplicate configuration",
+      "control": "Specs are bounded to 64 KiB, reject duplicate JSON keys and unknown fields, require strict string and boolean types, and use schema version 1."
+    },
+    {
+      "name": "Unsafe types or timestamps corrupt canonical state",
+      "control": "Values are scalar-only with strict booleans, bounded strings, finite decimals, bounded integers, and timezone-aware ISO 8601 timestamps."
+    },
+    {
+      "name": "Generic mapping bypasses sensitive-data review",
+      "control": "Common direct-sensitive field names and healthcare, clinical, and medical domains are rejected and require a reviewed coded adapter."
+    },
+    {
+      "name": "Declarative rule executes an action",
+      "control": "Rules create ActionProposal objects only; normal approval policy, separate execution queue, executor allowlist, exact confirmation, and receipts remain mandatory."
+    },
+    {
+      "name": "CLI validation prints source values",
+      "control": "validate-record returns adapter identity, mapped field names, spec hash, and version presence only; errors are bounded and payload-free."
+    }
+  ],
+  "findings": [
+    {
+      "severity": "informational",
+      "status": "verified",
+      "finding": "A synthetic two-version asset mapping reached Company Memory, change intelligence, two Cartographer cards, and three pending proposals."
+    },
+    {
+      "severity": "medium",
+      "status": "review_gate",
+      "finding": "Name-based sensitive-field exclusion reduces accidental intake but cannot classify the meaning of arbitrary custom field names or values."
+    },
+    {
+      "severity": "medium",
+      "status": "deployment_gate",
+      "finding": "Real source schemas require data inventory, retention, access, and domain review before use."
+    }
+  ],
+  "audit_evidence": [
+    "src/atlas_core/declarative_adapter.py",
+    "src/atlas_core/engine.py",
+    "src/atlas_core/cartographer.py",
+    "sdk/python/src/atlas_core_sdk/provider_cli.py",
+    "tests/test_declarative_adapter.py"
+  ],
+  "validation": [
+    "Nine focused declarative adapter tests passed.",
+    "Synthetic records produced typed canonical observations, deterministic changes, Cartographer lineage, and approval-gated proposals.",
+    "Negative tests rejected unknown and sensitive fields, healthcare domain use, strict type failures, naive timestamps, non-finite decimals, duplicate keys, and oversized specs.",
+    "CLI scaffold, inspect, and payload-free validate-record paths passed.",
+    "Installed SDK smoke produced two observations, two Cartographer cards, and one pending declarative proposal without returning record values."
+  ],
+  "residual_risk": [
+    "Field-name checks cannot detect sensitive values placed under misleading custom names.",
+    "Declarative rules are intentionally limited to single changed fields and do not replace reviewed domain policy.",
+    "No live source, credential, customer data, external action, or production deployment was used.",
+    "Recheck before enabling any real organization schema or expanding the operator set."
+  ]
+}

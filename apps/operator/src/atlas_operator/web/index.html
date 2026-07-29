@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas Core Operator</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail">
+      <a class="brand" href="#pulse" aria-label="Atlas Core home">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span><strong>Atlas</strong><small>Core Operator</small></span>
+      </a>
+      <nav aria-label="Operator sections">
+        <button class="nav-item is-active" data-view="pulse">
+          <span>01</span> Pulse
+        </button>
+        <button class="nav-item" data-view="hotel">
+          <span>02</span> Hotel Workspace
+        </button>
+        <button class="nav-item" data-view="ask">
+          <span>03</span> Ask Atlas
+        </button>
+        <button class="nav-item" data-view="approvals">
+          <span>04</span> Approvals
+          <b id="pendingBadge">0</b>
+        </button>
+        <button class="nav-item" data-view="cartographer">
+          <span>05</span> Cartographer
+        </button>
+        <button class="nav-item" data-view="imports">
+          <span>06</span> Imports
+        </button>
+        <button class="nav-item" data-view="backups">
+          <span>07</span> Backups
+        </button>
+        <button class="nav-item" data-view="automation">
+          <span>08</span> Automation
+        </button>
+        <button class="nav-item" data-view="executions">
+          <span>09</span> Executions
+        </button>
+        <button class="nav-item" data-view="providers">
+          <span>10</span> Providers
+        </button>
+        <button class="nav-item" data-view="audit">
+          <span>11</span> Audit
+        </button>
+      </nav>
+      <div class="rail-note">
+        <span class="status-dot"></span>
+        <div><strong>Local only</strong><small>127.0.0.1 · no cloud egress</small></div>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Company intelligence control plane</p>
+          <h1 id="viewTitle">System pulse</h1>
+        </div>
+        <div class="tenant-control">
+          <label for="tenantInput">Active company</label>
+          <div>
+            <input id="tenantInput" value="demo-hotel" maxlength="100" autocomplete="off">
+            <button id="switchTenant" class="quiet-button">Switch</button>
+          </div>
+        </div>
+      </header>
+
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+      <section id="pulse" class="view is-active">
+        <div class="hero-grid">
+          <article class="answer-card">
+            <p class="eyebrow">Atlas answers one operational question</p>
+            <h2>What changed, why did it change, and what should happen next?</h2>
+            <p>Every answer is grounded in company memory, translated into a canonical language, mapped by Cartographer, and held for approval before action.</p>
+            <div class="hero-actions">
+              <button id="seedHotel" class="primary-button">Load hotel demonstration</button>
+              <button id="seedApartment" class="quiet-button">Import apartment demonstration</button>
+              <button class="quiet-button industry-demo" data-domain="construction">Import construction demonstration</button>
+              <button class="quiet-button industry-demo" data-domain="manufacturing">Import manufacturing demonstration</button>
+              <button class="quiet-button industry-demo" data-domain="healthcare">Import healthcare demonstration</button>
+            </div>
+          </article>
+          <article class="stack-card">
+            <p class="eyebrow">Shared engine</p>
+            <ol class="engine-stack">
+              <li><span>01</span><div><strong>Company Memory</strong><small>Versioned observations and provenance</small></div></li>
+              <li><span>02</span><div><strong>Universal Translator</strong><small>Industry records into one language</small></div></li>
+              <li><span>03</span><div><strong>Cartographer</strong><small>Maps, lineage, lanes, and continuity</small></div></li>
+              <li><span>04</span><div><strong>Change Intelligence</strong><small>Field-level before and after</small></div></li>
+              <li><span>05</span><div><strong>Approval Engine</strong><small>Human control before execution</small></div></li>
+            </ol>
+          </article>
+        </div>
+
+        <div id="metricGrid" class="metric-grid" aria-label="Tenant metrics"></div>
+
+        <div class="section-heading">
+          <div><p class="eyebrow">Live work</p><h2>Approval queue</h2></div>
+          <button class="quiet-button" data-go="approvals">Review all</button>
+        </div>
+        <div id="pulseApprovals" class="card-list"></div>
+      </section>
+
+      <section id="hotel" class="view">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">First industry application</p>
+            <h2>Hotel operations workspace</h2>
+          </div>
+          <div class="hotel-actions">
+            <button id="seedHotelWorkspace" class="primary-button">Load sandbox cancellation</button>
+            <button id="refreshHotel" class="quiet-button">Refresh</button>
+          </div>
+        </div>
+        <p class="section-copy">A persistent, local-only PMS sandbox proves the complete workflow: reservation change, Company Memory, Cartographer lineage, human approval, explicit execution, provider-side state, and rollback. It has no network endpoint or credentials.</p>
+        <div id="hotelSummary" class="automation-summary"></div>
+        <div class="section-heading compact-heading">
+          <div><p class="eyebrow">Provider-side state</p><h2>Sandbox reservations</h2></div>
+        </div>
+        <div id="hotelReservations" class="card-list"></div>
+        <div class="section-heading compact-heading">
+          <div><p class="eyebrow">Controlled next step</p><h2>Approved actions</h2></div>
+        </div>
+        <div id="hotelActions" class="card-list"></div>
+      </section>
+
+      <section id="ask" class="view">
+        <div class="ask-layout">
+          <div>
+            <p class="eyebrow">Cited company intelligence</p>
+            <h2>Ask what changed</h2>
+            <p class="section-copy">Atlas retrieves tenant-scoped Company Memory, Cartographer lineage, and recorded proposals. It does not invent a cause when the evidence does not contain one.</p>
+          </div>
+          <form id="askForm" class="ask-form">
+            <label for="askInput">Question</label>
+            <div>
+              <input id="askInput" maxlength="500" value="What changed, why did it change, and what should happen next?" required>
+              <button id="askButton" class="primary-button" type="submit">Ask Atlas</button>
+            </div>
+          </form>
+        </div>
+        <div id="answerResult" class="answer-result" aria-live="polite">
+          <div class="empty-state">Load an industry demonstration, then ask Atlas for an evidence-backed answer.</div>
+        </div>
+      </section>
+
+      <section id="approvals" class="view">
+        <div class="section-heading">
+          <div><p class="eyebrow">Human gate</p><h2>Pending decisions</h2></div>
+          <select id="proposalFilter" aria-label="Proposal status">
+            <option value="pending">Pending</option>
+            <option value="">All decisions</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="blocked">Blocked</option>
+          </select>
+        </div>
+        <div id="approvalList" class="card-list"></div>
+      </section>
+
+      <section id="cartographer" class="view">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Source-to-decision map</p>
+            <h2>Cartographer lanes</h2>
+          </div>
+          <div class="search-control">
+            <input id="mapSearch" placeholder="Search maps, sources, decisions">
+            <button id="searchMaps" class="quiet-button">Search</button>
+          </div>
+        </div>
+        <div id="mapList" class="map-list"></div>
+      </section>
+
+      <section id="imports" class="view">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Replayable intake</p>
+            <h2>Import ledger</h2>
+          </div>
+          <button id="refreshImports" class="quiet-button">Refresh</button>
+        </div>
+        <p class="section-copy">Each receipt proves which connector records were imported, deduplicated, replayed, or rolled back.</p>
+        <div class="file-import-panel">
+          <div>
+            <p class="eyebrow">Local file intake</p>
+            <h3>Preview JSONL or CSV export</h3>
+            <p>Files stay on this localhost service. Preview validates shape and lists record IDs without displaying payload values.</p>
+          </div>
+          <div class="file-import-grid">
+            <label>Industry
+              <select id="fileDomain">
+                <option value="hotel">Hotel</option>
+                <option value="apartment">Apartment</option>
+                <option value="construction">Construction</option>
+                <option value="manufacturing">Manufacturing</option>
+                <option value="healthcare">Healthcare administration</option>
+              </select>
+            </label>
+            <label>Format
+              <select id="fileFormat">
+                <option value="jsonl">JSON Lines</option>
+                <option value="csv">CSV</option>
+              </select>
+            </label>
+            <label>Connector ID
+              <input id="fileConnectorId" value="local-file-drop" maxlength="100">
+            </label>
+            <label>Source system
+              <input id="fileSourceSystem" value="operator-file-import" maxlength="100">
+            </label>
+            <label class="file-picker">Export file
+              <input id="fileImportInput" type="file" accept=".jsonl,.ndjson,.csv,text/csv,application/x-ndjson">
+            </label>
+          </div>
+          <div class="file-import-actions">
+            <button id="previewFileImport" class="quiet-button">Preview file</button>
+            <button id="applyFileImport" class="primary-button" disabled>Import validated batch</button>
+          </div>
+          <div id="fileImportPreview" class="file-preview" aria-live="polite"></div>
+        </div>
+        <div id="importList" class="receipt-list"></div>
+      </section>
+
+      <section id="backups" class="view">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Recovery point management</p>
+            <h2>Verified backups</h2>
+          </div>
+          <button id="createBackup" class="primary-button">Create backup</button>
+        </div>
+        <p class="section-copy">Each recovery point includes a SHA-256 checksum, SQLite integrity result, and schema version. Restore automatically creates a safety backup first.</p>
+        <div class="recovery-tools">
+          <div class="recovery-tool">
+            <label for="recoveryPassphrase">Portable backup passphrase</label>
+            <input id="recoveryPassphrase" type="password" minlength="16" maxlength="1024" autocomplete="new-password" placeholder="16+ characters; never stored">
+            <input id="recoveryFile" type="file" accept=".atlasbackup,application/vnd.atlas.encrypted-backup">
+            <button id="importBackup" class="quiet-button">Import encrypted backup</button>
+          </div>
+          <div class="recovery-tool retention-tool">
+            <label for="retentionKeep">Retention</label>
+            <div>
+              <span>Keep newest</span>
+              <input id="retentionKeep" type="number" min="1" max="1000" value="5">
+              <button id="previewRetention" class="quiet-button">Preview pruning</button>
+            </div>
+          </div>
+        </div>
+        <div id="backupList" class="receipt-list"></div>
+      </section>
+
+      <section id="audit" class="view">
+        <div class="section-heading">
+          <div><p class="eyebrow">Immutable evidence</p><h2>Audit timeline</h2></div>
+          <button id="refreshAudit" class="quiet-button">Refresh</button>
+        </div>
+        <div id="auditList" class="timeline"></div>
+      </section>
+
+      <section id="executions" class="view">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Post-approval control</p>
+            <h2>Execution outbox</h2>
+          </div>
+          <div class="search-control">
+            <select id="executionFilter" aria-label="Execution status">
+              <option value="">All receipts</option>
+              <option value="queued">Queued</option>
+              <option value="running">Running</option>
+              <option value="succeeded">Succeeded</option>
+              <option value="failed">Failed</option>
+              <option value="uncertain">Needs reconciliation</option>
+              <option value="rolled_back">Rolled back</option>
+              <option value="rollback_failed">Rollback failed</option>
+            </select>
+            <button id="refreshExecutions" class="quiet-button">Refresh</button>
+          </div>
+        </div>
+        <p class="section-copy">Atlas shows queue, idempotency, outcome, reconciliation, and rollback receipts. This local browser can operate only the built-in Hotel/PMS sandbox; live executors remain unavailable.</p>
+        <div id="executionSummary" class="automation-summary"></div>
+        <div id="executionList" class="timeline"></div>
+      </section>
+
+      <section id="providers" class="view">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Adapter development kit</p>
+            <h2>Provider readiness</h2>
+          </div>
+          <button id="refreshProviders" class="quiet-button">Refresh</button>
+        </div>
+        <p class="section-copy">Atlas validates safe manifests, runtime allowlists, credential strategy, synthetic execution, replay behavior, rollback, state restoration, and fixture cleanup. Dynamic certification runs only for offline local sandboxes; networked providers remain review-gated.</p>
+        <div id="providerSummary" class="automation-summary"></div>
+        <div id="providerList" class="card-list"></div>
+      </section>
+
+      <section id="automation" class="view">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Unattended local operations</p>
+            <h2>Automation health</h2>
+          </div>
+          <button id="refreshAutomation" class="quiet-button">Refresh</button>
+        </div>
+        <p class="section-copy">The runner watches explicitly configured local export inboxes and creates verified recovery points. This view is read-only; it never starts a job or connects to a vendor.</p>
+        <div id="automationSummary" class="automation-summary"></div>
+        <div class="section-heading compact-heading">
+          <div><p class="eyebrow">Durable receipts</p><h2>Recent automation events</h2></div>
+        </div>
+        <div id="automationEvents" class="timeline"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="decisionDialog">
+    <form method="dialog" id="decisionForm">
+      <div class="dialog-head">
+        <div><p class="eyebrow">Approval engine</p><h2 id="decisionTitle">Review proposal</h2></div>
+        <button value="cancel" class="icon-button" aria-label="Close">×</button>
+      </div>
+      <p id="decisionReason" class="dialog-copy"></p>
+      <input type="hidden" id="proposalId">
+      <label>Reviewer
+        <input id="reviewerInput" value="local-operator" maxlength="100" required>
+      </label>
+      <label>Decision note
+        <textarea id="decisionNote" rows="4" maxlength="1000" required placeholder="What did you verify?"></textarea>
+      </label>
+      <div class="dialog-actions">
+        <button type="button" id="rejectProposal" class="danger-button">Reject</button>
+        <button type="button" id="approveProposal" class="primary-button">Approve</button>
+      </div>
+      <p class="fine-print">This records a decision. Atlas Core does not execute the external business action.</p>
+    </form>
+  </dialog>
+
+  <dialog id="executionDialog">
+    <form method="dialog" id="executionForm">
+      <div class="dialog-head">
+        <div><p class="eyebrow">Sandbox execution gate</p><h2 id="executionTitle">Confirm action</h2></div>
+        <button value="cancel" class="icon-button" aria-label="Close">×</button>
+      </div>
+      <p id="executionCopy" class="dialog-copy"></p>
+      <input type="hidden" id="executionRoute">
+      <label>Type the exact confirmation
+        <code id="executionExpected" class="confirmation-code"></code>
+        <input id="executionConfirmation" autocomplete="off" required>
+      </label>
+      <div class="dialog-actions">
+        <button value="cancel" class="quiet-button">Cancel</button>
+        <button type="button" id="confirmExecution" class="primary-button">Confirm sandbox action</button>
+      </div>
+      <p class="fine-print">This changes only the persistent local Hotel/PMS sandbox. It cannot contact a live hotel system.</p>
+    </form>
+  </dialog>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
