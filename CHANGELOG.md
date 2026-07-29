@@ -2,6 +2,13 @@
 
 All notable public-source changes are documented here.
 
+## 0.1.0 - 2026-07-29 (GitReverse review)
+
+- Confirmed that the post-release GitReverse prompt accurately describes the
+  local runtime, change/approval flow, and synthetic hotel sandbox.
+- Recorded SDK, Cartographer, multi-industry, recovery, and private-Gateway
+  omissions as documentation priorities rather than product claims.
+
 ## 0.1.0 - 2026-07-29
 
 - Initial public-source release of Atlas Core and its official Python SDK.
