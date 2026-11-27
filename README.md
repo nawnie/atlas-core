@@ -41,6 +41,7 @@ This first vertical slice is deliberately local and deterministic. Its cited ans
 Python 3.12 is required. The core demonstration uses the standard library; the recovery and signed-backup path also installs `cryptography`.
 
 ```powershell
+py -3.12 -m pip install -e .
 py -3.12 -m atlas_core.cli demo --database runtime\atlas-core.db
 ```
 
